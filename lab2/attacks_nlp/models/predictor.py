@@ -13,6 +13,7 @@ from models.text_cnn import Config
 
 
 '''Convolutional Neural Networks for Sentence Classification'''
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 UNK, PAD = '<UNK>', '<PAD>'  # 未知字，padding符号
 
@@ -48,7 +49,7 @@ def skip_token(seq, token):
 class Predictor(nn.Module):
     def __init__(self, model, config):
         super(Predictor, self).__init__()
-        self.model = model
+        self.model = model.to(device)
         self.config = config
         self.word_vocab = pkl.load(open(config.vocab_path, 'rb'))
         self.pad_size = config.pad_size
@@ -96,6 +97,7 @@ class Predictor(nn.Module):
         np.array of int :
 
         """
+        # x = x.to(device)
         outputs = self.model(x)
         predic = torch.max(outputs.data, 1)[1].cpu().numpy()
         return predic
@@ -156,7 +158,7 @@ class Predictor(nn.Module):
                     indices.append([None])
             text_x_indices[i] = indices
         # print(len(x))
-        x = torch.LongTensor(x)
+        x = torch.LongTensor(x).to(device)
         return x, text_x_indices
 
     def gradient(self, x, y):
