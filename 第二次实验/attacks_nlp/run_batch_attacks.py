@@ -17,7 +17,7 @@ from models.predictor import Predictor
 from tqdm import tqdm
 from attacks import common_attack
 
-
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 class MyTestCase():
     def __init__(self):
 
@@ -27,17 +27,18 @@ class MyTestCase():
         PATH = 'datas'
         embedding = 'embedding_pretrain.npz'
         self.config = Config(PATH, embedding)
-        self.textcnn = TextCNN(self.config)
-        state_dict = torch.load('datas/saved_dict/rawTextCNN.ckpt')
+        self.textcnn = TextCNN(self.config).to(device)
+        state_dict = torch.load('datas/saved_dict/TextCNN.ckpt',map_location=device)
         self.textcnn.load_state_dict(state_dict, strict=False)
         self.textcnn.eval()
-        self.predictor = Predictor(self.textcnn,self.config)
+        self.predictor = Predictor(self.textcnn,self.config).to(device)
 
         self.attacker = text_bugger.TextBugger(self.predictor, transformation_manager)
 
     def test_black_box(self):
 
         file_path = 'datas/data/samples.txt'
+        file_path = 'datas/data/train.txt'
 
         attack_suc = 0
         batch_num = 0
@@ -70,6 +71,7 @@ class MyTestCase():
     def test_white_box(self):
 
         file_path = 'datas/data/samples.txt'
+        file_path = 'datas/data/train.txt'
         attack_suc = 0
         batch_num = 0
         times_list = []
