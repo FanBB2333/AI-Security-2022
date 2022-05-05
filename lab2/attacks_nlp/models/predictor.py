@@ -163,7 +163,7 @@ class Predictor(nn.Module):
 
     def gradient(self, x, y):
 
-        data, target = torch.LongTensor(x), torch.LongTensor(y)
+        data, target = torch.LongTensor(x).to(device), torch.LongTensor(y).to(device)
         output = self.model(data)
         # Calculate the loss
         loss = F.cross_entropy(output, target)

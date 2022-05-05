@@ -38,7 +38,7 @@ class MyTestCase():
     def test_black_box(self):
 
         file_path = 'datas/data/samples.txt'
-        file_path = 'datas/data/train.txt'
+        file_path = 'datas/data/test.txt'
 
         attack_suc = 0
         batch_num = 0
@@ -71,7 +71,7 @@ class MyTestCase():
     def test_white_box(self):
 
         file_path = 'datas/data/samples.txt'
-        file_path = 'datas/data/train.txt'
+        file_path = 'datas/data/test.txt'
         attack_suc = 0
         batch_num = 0
         times_list = []
