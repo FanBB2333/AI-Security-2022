@@ -1,5 +1,6 @@
 
 import models, torch, copy
+from tqdm import tqdm
 class Client(object):
 
 	def __init__(self, conf, model, train_dataset, id = -1):
@@ -32,7 +33,7 @@ class Client(object):
 		self.local_model.train()
 		for e in range(self.conf["local_epochs"]):
 			
-			for batch_id, batch in enumerate(self.train_loader):
+			for batch_id, batch in enumerate(tqdm(self.train_loader)):
 				data, target = batch
 				
 				if torch.cuda.is_available():
@@ -45,7 +46,7 @@ class Client(object):
 				loss.backward()
 			
 				optimizer.step()
-			print("Epoch %d done." % e)	
+			print("[ local_epochs ]: Epoch %d done." % e)
 		diff = dict()
 		for name, data in self.local_model.state_dict().items():
 			diff[name] = (data - model.state_dict()[name])
