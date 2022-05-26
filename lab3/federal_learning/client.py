@@ -34,7 +34,7 @@ class Client(object):
         self.local_model.train()
         for e in range(self.conf["local_epochs"]):
 
-            for batch_id, batch in enumerate(tqdm(self.train_loader)):
+            for batch_id, batch in enumerate((self.train_loader)):
                 data, target = batch
 
                 if torch.cuda.is_available():

@@ -26,7 +26,7 @@ if __name__ == '__main__':
         clients.append(Client(conf, server.global_model, train_datasets, c))
 
     print("\n\n")
-    for e in range(conf["global_epochs"]):
+    for e in tqdm(range(conf["global_epochs"])):
 
         candidates = random.sample(clients, conf["k"])
 
