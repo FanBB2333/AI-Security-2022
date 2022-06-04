@@ -1,3 +1,9 @@
+# 第三次上机作业
+
+姓名：范钊瑀
+
+学号：3190105838
+
 ## 1.代码流程分析
 
 在整个的项目中，主要包含有以下几部分内容，这部分中我将会结合自己的理解和实验指导中的说明来对代码流程进行分析。
@@ -87,6 +93,7 @@ class Server(object):
 ```
 
 在每一轮全局训练结束后，需要对模型进行评测，因此在Server服务端中定义了如下的衡量函数，用于计算模型的acc和loss，其中模型的loss采用交叉熵函数衡量。
+由于每一次batch的数据在传播的过程都会产生梯度的累计，这里将最终的数据量按`dataset_size`划分，避免了由于训练数据集过大而堆叠的loss过多。
 ```python
     def model_eval(self):
         self.global_model.eval()
@@ -187,7 +194,11 @@ class Client(object):
 
         return diff
 ```
+
+
 ## 2.算法实现说明
+
+根据config文件里的配置，整个训练过程中的`global_epochs`为20，代表全局的模型一共有20次梯度的更新，每个epoch中会从总共的`no_models`个server模型中随机挑选k(参数中k=5)个模型进行训练，并将梯度进行汇总，汇总之后传递到Server的模型以供梯度聚合。
 
 
 
@@ -198,6 +209,8 @@ class Client(object):
 
 ## 3.运行结果
 
+在添加了相关输出以后，我们能够更直观地看到local和global的训练过程。在每个Global epoch结束的时候会将聚合的结果汇总并进行梯度更新，可以看到在20个Global epoch结束之后，整体的loss已经能够达到较低的水平，而accuracy也在逐渐增高。
 
+![](./pic/res1.png)
 
 
