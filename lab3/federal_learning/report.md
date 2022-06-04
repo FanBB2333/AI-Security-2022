@@ -213,4 +213,7 @@ class Client(object):
 
 ![](./pic/res1.png)
 
+之后选用`tensorboard`进行可视化，可以看到在全局梯度更新的过程中acc在不断增大，loss在不断减小。
+
+![](./pic/loss.png)
 
