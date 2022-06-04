@@ -14,7 +14,7 @@ writer = SummaryWriter()
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Federated Learning')
-    parser.add_argument('-c', '--conf', dest='conf')
+    parser.add_argument('-c', '--conf', dest='conf', default='./utils/conf.json')
     args = parser.parse_args()
 
     with open(args.conf, 'r') as f:
