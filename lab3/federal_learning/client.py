@@ -1,5 +1,6 @@
 import models, torch, copy
 from tqdm import tqdm
+from main import writer
 
 
 class Client(object):
@@ -47,6 +48,7 @@ class Client(object):
                 loss.backward()
 
                 optimizer.step()
+            # writer.add_scalar('local/local_loss', loss, e)
             print("[ local_epochs ]: Epoch %d done." % e)
         diff = dict()
         for name, data in self.local_model.state_dict().items():

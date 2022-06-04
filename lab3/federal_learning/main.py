@@ -7,6 +7,9 @@ import torch, random
 from server import *
 from client import *
 import models, datasets
+from tensorboardX import SummaryWriter
+
+writer = SummaryWriter()
 
 if __name__ == '__main__':
 
@@ -44,5 +47,6 @@ if __name__ == '__main__':
         server.model_aggregate(weight_accumulator)
 
         acc, loss = server.model_eval()
-
+        writer.add_scalar('global/loss', loss, e)
+        writer.add_scalar('global/acc', acc, e)
         print("[ GLOBAL ]: Epoch %d, acc: %f, loss: %f\n" % (e, acc, loss))
