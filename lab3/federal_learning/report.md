@@ -203,17 +203,13 @@ class Client(object):
 
 
 
-
-
-
-
 ## 3.运行结果
 
 在添加了相关输出以后，我们能够更直观地看到local和global的训练过程。在每个Global epoch结束的时候会将聚合的结果汇总并进行梯度更新，可以看到在20个Global epoch结束之后，整体的loss已经能够达到较低的水平，而accuracy也在逐渐增高。
 
 ![](./pic/res1.png)
 
-之后选用`tensorboard`进行可视化，可以看到在全局梯度更新的过程中acc在不断增大，loss在不断减小。
+同时对代码进行修改，可以利用`tensorboard`进行训练过程可视化，可以看到在全局梯度更新的过程中acc在不断增大，loss在不断减小。
 
 ![](./pic/loss.png)
 
