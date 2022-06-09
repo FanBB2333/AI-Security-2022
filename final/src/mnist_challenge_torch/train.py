@@ -12,7 +12,11 @@ from timeit import default_timer as timer
 
 import tensorflow as tf
 import numpy as np
-from tensorflow.examples.tutorials.mnist import input_data
+import pytorch_lightning as pl
+import torchvision.datasets as dataset
+import torchvision.transforms as transforms
+import torchvision.utils as utils
+import torch.utils.data as data_utils
 
 from model import Model
 from pgd_attack import LinfPGDAttack
@@ -31,13 +35,22 @@ num_checkpoint_steps = config['num_checkpoint_steps']
 batch_size = config['training_batch_size']
 
 # Setting up the data and the model
-mnist = input_data.read_data_sets('MNIST_data', one_hot=False)
-global_step = tf.contrib.framework.get_or_create_global_step()
+
+train_data = dataset.MNIST(root="mnist",
+                           train=True,
+                           transform=transforms.ToTensor(),
+                           download=True)
+train_loader = utils.data.DataLoader(train_data)
+test_data = dataset.MNIST(root="mnist",
+                          train=False,
+                          transform=transforms.ToTensor(),
+                          download=True)
+test_loader = utils.data.DataLoader(test_data)
 model = Model()
 
 # Setting up the optimizer
-train_step = tf.train.AdamOptimizer(1e-4).minimize(model.xent,
-                                                   global_step=global_step)
+# train_step = tf.train.AdamOptimizer(1e-4).minimize(model.xent,
+#                                                    global_step=global_step)
 
 # Set up adversary
 attack = LinfPGDAttack(model, 
@@ -67,6 +80,11 @@ tf.summary.image('images adv train', model.x_image)
 merged_summaries = tf.summary.merge_all()
 
 shutil.copy('config.json', model_dir)
+
+if __name__ == "__main__":
+    trainer = pl.Trainer(max_epochs=1,
+                         fast_dev_run=True)
+    trainer.fit(model=model, train_dataloaders=train_loader)
 
 with tf.Session() as sess:
   # Initialize the summary writer, global variables, and our time counter.
