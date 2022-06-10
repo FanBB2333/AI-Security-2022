@@ -9,6 +9,7 @@ from __future__ import print_function
 
 import numpy as np
 import torch.autograd
+from torch.autograd import Variable
 
 from dataset import get_MNIST_loader
 
@@ -55,19 +56,20 @@ class LinfPGDAttack:
             x = np.copy(x_nat)
 
         for i in range(self.k):
-            x = torch.tensor(x, dtype=torch.double)
-            y = torch.tensor(y, dtype=torch.double)
-            loss = self.model(x, y)
+            x = Variable(x.float(), requires_grad=True)
+            # y = torch.tensor(y, dtype=torch.double)
+            loss, num_correct, accuracy = self.model(x, y)
+            # loss.requires_grad_(True)
             grad = torch.autograd.grad(loss, x)[0]
             # grad = sess.run(self.grad, feed_dict={self.model.x_input: x,
             #                                       self.model.y_input: y})
 
-            x += self.a * np.sign(grad)
+            x1 = self.a * np.sign(grad) + x
 
-            x = np.clip(x, x_nat - self.epsilon, x_nat + self.epsilon)
-            x = np.clip(x, 0, 1)  # ensure valid pixel range
+            x2 = np.clip(x1.detach().numpy(), x_nat - self.epsilon, x_nat + self.epsilon)
+            x3 = np.clip(x2, 0, 1)  # ensure valid pixel range
 
-        return x
+        return x3
 
 
 if __name__ == '__main__':
