@@ -102,6 +102,7 @@ if __name__ == '__main__':
     print('Iterating over {} batches'.format(num_batches))
     train_loader, test_loader = get_MNIST_loader()
     for ibatch, batch_data in enumerate(test_loader):
+        print(f'Batch {ibatch}')
         x_batch, y_batch = batch_data
         x_batch_adv = attack.perturb(x_batch, y_batch)
         x_adv.append(x_batch_adv)
