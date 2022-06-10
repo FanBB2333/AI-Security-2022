@@ -54,10 +54,11 @@ class LinfPGDAttack:
         """Given a set of examples (x_nat, y), returns a set of adversarial
            examples within epsilon of x_nat in l_infinity norm."""
         if self.rand:
-            x = x_nat.cpu() + np.random.uniform(-self.epsilon, self.epsilon, x_nat.cpu().shape)
-            x = np.clip(x, 0, 1)  # ensure valid pixel range
+            # x = x_nat + np.random.uniform(-self.epsilon, self.epsilon, x_nat.shape)
+            x = x_nat + torch.Tensor(x_nat.shape).uniform_(-self.epsilon, self.epsilon)
+            x = torch.clamp(x, 0, 1)  # ensure valid pixel range
         else:
-            x = np.copy(x_nat)
+            x = x_nat.clone()
 
         for i in range(self.k):
             x = Variable(x.float(), requires_grad=True)
@@ -69,10 +70,10 @@ class LinfPGDAttack:
             # grad = sess.run(self.grad, feed_dict={self.model.x_input: x,
             #                                       self.model.y_input: y})
 
-            x1 = self.a * np.sign(grad.cpu()) + x.cpu()
+            x1 = self.a * torch.sign(grad) + x
 
-            x2 = np.clip(x1.cpu().detach().numpy(), x_nat.cpu() - self.epsilon, x_nat.cpu() + self.epsilon)
-            x3 = np.clip(x2, 0, 1)  # ensure valid pixel range
+            x2 = torch.clamp(x1, x_nat - self.epsilon, x_nat + self.epsilon)
+            x3 = torch.clamp(x2, 0, 1)  # ensure valid pixel range
 
         return x3
 
