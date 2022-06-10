@@ -14,6 +14,10 @@ from torch.autograd import Variable
 from dataset import get_MNIST_loader
 
 import pytorch_lightning as pl
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
 class LinfPGDAttack:
     def __init__(self, model: pl.LightningModule, epsilon, k, a, random_start, loss_func):
         """Attack parameter initialization. The attack performs k steps of
@@ -81,8 +85,8 @@ if __name__ == '__main__':
     with open('config.json') as config_file:
         config = json.load(config_file)
 
-
     model = Model()
+    model = model.to(device)
     # TODO: Load model from checkpoint
     attack = LinfPGDAttack(model,
                            config['epsilon'],
@@ -90,7 +94,6 @@ if __name__ == '__main__':
                            config['a'],
                            config['random_start'],
                            config['loss_func'])
-
 
     # Iterate over the samples batch-by-batch
     num_eval_examples = config['num_eval_examples']
@@ -103,10 +106,11 @@ if __name__ == '__main__':
     train_loader, test_loader = get_MNIST_loader()
     for ibatch, batch_data in enumerate(test_loader):
         print(f'Batch {ibatch}')
+        # batch_data = batch_data.to(device)
         x_batch, y_batch = batch_data
+        x_batch, y_batch = x_batch.to(device), y_batch.to(device)
         x_batch_adv = attack.perturb(x_batch, y_batch)
         x_adv.append(x_batch_adv)
-
 
     print('Storing examples')
     path = config['store_adv_path']
