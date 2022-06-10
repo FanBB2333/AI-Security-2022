@@ -79,7 +79,10 @@ model = Model()
 
 if __name__ == "__main__":
     trainer = pl.Trainer(max_epochs=100,
-                         fast_dev_run=False)
+                         accelerator="gpu",
+                         strategy="ddp",
+                         fast_dev_run=False,
+                         gpus=-1,)
     trainer.fit(model=model, train_dataloaders=train_loader)
 
 # with tf.Session() as sess:

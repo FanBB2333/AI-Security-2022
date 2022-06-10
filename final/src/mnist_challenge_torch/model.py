@@ -43,7 +43,6 @@ class Model(pl.LightningModule):
         # output layer
         self.fc2 = nn.Linear(in_features=1024, out_features=10, bias=True)
 
-        self.loss_fn = nn.CrossEntropyLoss(reduce=False)
 
     def forward(self, x_input, y_input):
         # x_image = torch.reshape(x_input, [-1, 28, 28, 1])
