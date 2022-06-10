@@ -17,6 +17,8 @@ import torchvision.transforms as transforms
 import torchvision.utils as utils
 import torch.utils.data as data_utils
 from torch.utils.data import DataLoader, Dataset
+
+from final.src.mnist_challenge_torch.dataset import get_MNIST_loader
 from model import Model
 # from pgd_attack import LinfPGDAttack
 
@@ -35,16 +37,8 @@ with open('config.json') as config_file:
 
 # Setting up the data and the model
 
-train_data = dataset.MNIST(root="mnist",
-                           train=True,
-                           transform=transforms.ToTensor(),
-                           download=True)
-train_loader = DataLoader(train_data, batch_size=256)
-test_data = dataset.MNIST(root="mnist",
-                          train=False,
-                          transform=transforms.ToTensor(),
-                          download=True)
-test_loader = DataLoader(test_data, batch_size=128)
+
+train_loader, test_loader = get_MNIST_loader()
 model = Model()
 
 
