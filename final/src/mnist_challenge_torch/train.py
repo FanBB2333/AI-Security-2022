@@ -10,7 +10,6 @@ import os
 import shutil
 from timeit import default_timer as timer
 
-import tensorflow as tf
 import numpy as np
 import pytorch_lightning as pl
 import torchvision.datasets as dataset
@@ -19,7 +18,7 @@ import torchvision.utils as utils
 import torch.utils.data as data_utils
 from torch.utils.data import DataLoader, Dataset
 from model import Model
-from pgd_attack import LinfPGDAttack
+# from pgd_attack import LinfPGDAttack
 
 with open('config.json') as config_file:
     config = json.load(config_file)
@@ -40,7 +39,7 @@ train_data = dataset.MNIST(root="mnist",
                            train=True,
                            transform=transforms.ToTensor(),
                            download=True)
-train_loader = DataLoader(train_data, batch_size=16)
+train_loader = DataLoader(train_data, batch_size=32)
 test_data = dataset.MNIST(root="mnist",
                           train=False,
                           transform=transforms.ToTensor(),
