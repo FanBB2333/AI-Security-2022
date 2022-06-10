@@ -15,7 +15,7 @@ import pytorch_lightning as pl
 
 class Model(pl.LightningModule):
     def __init__(self):
-        super.__init__()
+        super().__init__()
         # first convolutional layer
         self.conv_l1 = nn.Conv2d(in_channels=1,
                                  out_channels=32,
@@ -47,7 +47,8 @@ class Model(pl.LightningModule):
 
     def forward(self, x_input, y_input):
         # x_image = torch.reshape(x_input, [-1, 28, 28, 1])
-        x_image = x_input.view(-1, 28, 28, 1)
+        # x_image = x_input.view(-1, 28, 28, 1)
+        x_image = x_input.view(-1, 1, 28, 28)
         h_conv1 = F.relu(self.conv_l1(x_image))
         h_pool1 = self.pool_l1(h_conv1)
         h_conv2 = F.relu(self.conv_l2(h_pool1))
@@ -56,14 +57,15 @@ class Model(pl.LightningModule):
         h_fc1 = F.relu(self.fc1(h_pool2_flat))
         h_fc2 = F.relu(self.fc2(h_fc1))
         # softmax_output = nn.functional.softmax(h_fc2)
-        loss = self.loss_fn(h_fc2, y_input)
+        # loss = self.loss_fn(h_fc2, y_input)
+        loss = F.cross_entropy(h_fc2, y_input)
 
         xent = loss.sum()
 
-        y_pred = torch.argmax(self.h_fc2, 1)
-        correct_prediction = torch.equal(self.y_pred, self.y_input)
-        num_correct = torch.sum(correct_prediction.to(torch.int64))
-        accuracy = torch.sum(correct_prediction.to(torch.float32))
+        y_pred = torch.argmax(h_fc2, 1)
+        correct_prediction = torch.equal(y_pred, y_input)
+        # num_correct = torch.sum(correct_prediction.to(torch.int64))
+        # accuracy = torch.sum(correct_prediction.to(torch.float32))
         return loss
 
     def training_step(self, batch, batch_idx):
