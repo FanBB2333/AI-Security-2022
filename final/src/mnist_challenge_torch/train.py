@@ -39,12 +39,12 @@ train_data = dataset.MNIST(root="mnist",
                            train=True,
                            transform=transforms.ToTensor(),
                            download=True)
-train_loader = DataLoader(train_data, batch_size=32)
+train_loader = DataLoader(train_data, batch_size=256)
 test_data = dataset.MNIST(root="mnist",
                           train=False,
                           transform=transforms.ToTensor(),
                           download=True)
-test_loader = DataLoader(test_data)
+test_loader = DataLoader(test_data, batch_size=128)
 model = Model()
 
 
@@ -82,8 +82,10 @@ if __name__ == "__main__":
                          accelerator="gpu",
                          strategy="ddp",
                          fast_dev_run=False,
-                         gpus=-1,)
-    trainer.fit(model=model, train_dataloaders=train_loader)
+                         gpus=-1,
+                         val_check_interval=0.25,
+                         )
+    trainer.fit(model=model, train_dataloaders=train_loader, val_dataloaders=test_loader)
 
 # with tf.Session() as sess:
 #   # Initialize the summary writer, global variables, and our time counter.

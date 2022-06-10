@@ -62,17 +62,24 @@ class Model(pl.LightningModule):
         xent = loss.sum()
 
         y_pred = torch.argmax(h_fc2, 1)
-        correct_prediction = torch.equal(y_pred, y_input)
-        # num_correct = torch.sum(correct_prediction.to(torch.int64))
-        # accuracy = torch.sum(correct_prediction.to(torch.float32))
-        return loss
+        correct_prediction = torch.eq(y_pred, y_input)
+        num_correct = torch.sum(correct_prediction.long())
+        accuracy = torch.mean(correct_prediction.float())
+        return loss, num_correct, accuracy
 
     def training_step(self, batch, batch_idx):
         x, y = batch
-        loss = self.forward(x, y)
-        self.log("train_loss", loss)
+        loss, num_correct, accuracy = self.forward(x, y)
+        self.log("train/loss", loss)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        loss, num_correct, accuracy = self.forward(x, y)
+        self.log("valid/loss", loss)
+        self.log("valid/accuracy", accuracy)
         return loss
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=1e-3)
+        optimizer = optim.Adam(self.parameters(), lr=3e-4)
         return optimizer
