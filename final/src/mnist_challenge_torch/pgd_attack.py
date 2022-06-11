@@ -77,7 +77,7 @@ class LinfPGDAttack:
             # x2 = torch.clamp(x1, x_nat - self.epsilon, x_nat + self.epsilon)
             x3 = torch.clamp(x2, 0, 1)  # ensure valid pixel range
 
-        return x3
+        return x3, y
 
 
 if __name__ == '__main__':
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     for ibatch, batch_data in enumerate(tqdm(test_loader)):
         x_batch, y_batch = batch_data
         x_batch, y_batch = x_batch.to(device), y_batch.to(device)
-        x_batch_adv = attack.perturb(x_batch, y_batch)
+        x_batch_adv, _ = attack.perturb(x_batch, y_batch)
         x_adv.append(x_batch_adv.cpu().detach().numpy())
 
     print('Storing examples')
