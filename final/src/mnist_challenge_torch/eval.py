@@ -21,7 +21,7 @@ from tensorboardX import SummaryWriter
 from model import Model
 from pgd_attack import LinfPGDAttack
 from pgd_attack import device
-from dataset import get_MNIST_loader
+from utils import get_MNIST_loader
 
 summary_writer = SummaryWriter('eval_logs')
 

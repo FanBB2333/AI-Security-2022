@@ -18,7 +18,7 @@ import torchvision.utils as utils
 import torch.utils.data as data_utils
 from torch.utils.data import DataLoader, Dataset
 
-from final.src.mnist_challenge_torch.dataset import get_MNIST_loader
+from utils import get_MNIST_loader, checkpoint_callback
 from model import Model
 # from pgd_attack import LinfPGDAttack
 
@@ -78,6 +78,7 @@ if __name__ == "__main__":
                          fast_dev_run=False,
                          gpus=-1,
                          val_check_interval=0.25,
+                         callbacks=[checkpoint_callback],
                          )
     trainer.fit(model=model, train_dataloaders=train_loader, val_dataloaders=test_loader)
 

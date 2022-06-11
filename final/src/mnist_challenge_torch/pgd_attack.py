@@ -11,7 +11,7 @@ import numpy as np
 import torch.autograd
 from torch.autograd import Variable
 
-from dataset import get_MNIST_loader
+from utils import get_MNIST_loader
 
 import pytorch_lightning as pl
 from tqdm import tqdm

@@ -20,3 +20,11 @@ def get_MNIST_loader():
     train_loader = DataLoader(train_data, batch_size=256)
     test_loader = DataLoader(test_data, batch_size=128)
     return train_loader, test_loader
+
+
+from pytorch_lightning.callbacks import ModelCheckpoint
+checkpoint_callback = ModelCheckpoint(dirpath="checkpoints/",
+                                      save_top_k=5,
+                                      monitor="valid/accuracy",
+                                      filename='checkpoint_{epoch:02d}-{valid/accuracy:.3f}',
+                                      )
