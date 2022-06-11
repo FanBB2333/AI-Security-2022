@@ -71,7 +71,9 @@ class LinfPGDAttack:
             #                                       self.model.y_input: y})
 
             x1 = self.a * torch.sign(grad) + x
-            x2 = torch.clamp(x1, x_nat - self.epsilon, x_nat + self.epsilon)
+            x2 = torch.where(x1 > x_nat + self.epsilon, x_nat + self.epsilon, x1)
+            x2 = torch.where(x2 < x_nat - self.epsilon, x_nat - self.epsilon, x2)
+            # x2 = torch.clamp(x1, x_nat - self.epsilon, x_nat + self.epsilon)
             x3 = torch.clamp(x2, 0, 1)  # ensure valid pixel range
 
         return x3
