@@ -55,7 +55,7 @@ class LinfPGDAttack:
            examples within epsilon of x_nat in l_infinity norm."""
         if self.rand:
             # x = x_nat + np.random.uniform(-self.epsilon, self.epsilon, x_nat.shape)
-            x = x_nat + torch.Tensor(x_nat.shape).uniform_(-self.epsilon, self.epsilon)
+            x = x_nat + torch.Tensor(x_nat.shape).uniform_(-self.epsilon, self.epsilon).to(device)
             x = torch.clamp(x, 0, 1)  # ensure valid pixel range
         else:
             x = x_nat.clone()
@@ -71,7 +71,6 @@ class LinfPGDAttack:
             #                                       self.model.y_input: y})
 
             x1 = self.a * torch.sign(grad) + x
-
             x2 = torch.clamp(x1, x_nat - self.epsilon, x_nat + self.epsilon)
             x3 = torch.clamp(x2, 0, 1)  # ensure valid pixel range
 
