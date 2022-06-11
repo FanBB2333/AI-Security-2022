@@ -24,7 +24,7 @@ def get_MNIST_loader():
 
 from pytorch_lightning.callbacks import ModelCheckpoint
 checkpoint_callback = ModelCheckpoint(dirpath="checkpoints/",
-                                      save_top_k=5,
-                                      monitor="valid/accuracy",
-                                      filename='checkpoint_{epoch:02d}-{valid/accuracy:.3f}',
+                                    #   save_top_k=5,
+                                    #   monitor="valid/accuracy",
+                                    #   filename='checkpoint_{epoch:02d}',
                                       )

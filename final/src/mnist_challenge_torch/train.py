@@ -72,7 +72,7 @@ model = Model()
 # shutil.copy('config.json', model_dir)
 
 if __name__ == "__main__":
-    trainer = pl.Trainer(max_epochs=100,
+    trainer = pl.Trainer(max_epochs=20,
                          accelerator="gpu",
                          strategy="ddp",
                          fast_dev_run=False,

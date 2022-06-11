@@ -22,6 +22,8 @@ from model import Model
 from pgd_attack import LinfPGDAttack
 from pgd_attack import device
 from utils import get_MNIST_loader
+import pytorch_lightning as pl
+from utils import checkpoint_callback
 
 summary_writer = SummaryWriter('eval_logs')
 
@@ -62,13 +64,16 @@ def evaluate_checkpoint(filename = None):
     # Restore the checkpoint
 
     # Iterate over the samples batch-by-batch
-    num_batches = int(math.ceil(num_eval_examples / eval_batch_size))
+    # num_batches = int(math.ceil(num_eval_examples / eval_batch_size))
     total_xent_nat = 0.
     total_xent_adv = 0.
     total_corr_nat = 0
     total_corr_adv = 0
     if filename != None:
-        model.load_from_checkpoint(filename)
+        print(f'Loading model from checkpoint {filename}')
+        model = Model.load_from_checkpoint(filename)
+        model = model.to(device)
+    num_eval_examples = 0
     # model.eval()
     # with torch.no_grad():
     for ibatch, batch_data in enumerate(tqdm(test_loader)):
@@ -83,6 +88,9 @@ def evaluate_checkpoint(filename = None):
         total_xent_adv += loss_adv.sum()
         total_corr_nat += num_correct_nat
         total_corr_adv += num_correct_adv
+        num_eval_examples += int(y_batch.shape[0])
+
+        # print(f'corr: {num_correct_nat}, all:{int(y_batch.shape[0])}, acc: {accuracy_nat}')
 
 
     avg_xent_nat = total_xent_nat / num_eval_examples
@@ -107,7 +115,16 @@ def evaluate_checkpoint(filename = None):
 
 
 if __name__ == '__main__':
-    evaluate_checkpoint()
+    evaluate_checkpoint('./checkpoints/epoch=19-step=2357.ckpt')
+    trainer = pl.Trainer(max_epochs=20,
+                        accelerator="gpu",
+                        strategy="ddp",
+                        fast_dev_run=False,
+                        gpus=-1,
+                        val_check_interval=0.25,
+                        callbacks=[checkpoint_callback],
+                        )
+    # trainer.validate(model=Model(), ckpt_path='./checkpoints/epoch=19-step=2357.ckpt', dataloaders=[test_loader])
 
 
 
