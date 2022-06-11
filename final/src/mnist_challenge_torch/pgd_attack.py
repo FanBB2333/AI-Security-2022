@@ -14,6 +14,7 @@ from torch.autograd import Variable
 from dataset import get_MNIST_loader
 
 import pytorch_lightning as pl
+from tqdm import tqdm
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -105,15 +106,13 @@ if __name__ == '__main__':
 
     x_adv = []  # adv accumulator
 
-    print('Iterating over {} batches'.format(num_batches))
     train_loader, test_loader = get_MNIST_loader()
-    for ibatch, batch_data in enumerate(test_loader):
-        print(f'Batch {ibatch}')
-        # batch_data = batch_data.to(device)
+    print('Iterating over {} batches'.format(len(test_loader)))
+    for ibatch, batch_data in enumerate(tqdm(test_loader)):
         x_batch, y_batch = batch_data
         x_batch, y_batch = x_batch.to(device), y_batch.to(device)
         x_batch_adv = attack.perturb(x_batch, y_batch)
-        x_adv.append(x_batch_adv)
+        x_adv.append(x_batch_adv.cpu().detach().numpy())
 
     print('Storing examples')
     path = config['store_adv_path']
