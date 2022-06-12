@@ -1,5 +1,8 @@
 .idea
-
+.DS_Store
+events.out*
+*.tar.gz
+*.gz
 ### JupyterNotebooks template
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/

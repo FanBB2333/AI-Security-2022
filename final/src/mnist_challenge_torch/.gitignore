@@ -1,0 +1,7 @@
+mnist/
+
+lightning_logs/
+
+eval_logs/
+
+checkpoints/

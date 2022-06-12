@@ -1,0 +1,8 @@
+torch
+torchvision
+tqdm==4.63.1
+numpy==1.22.3
+tensorboard==2.8.0
+tensorboardX==2.5
+robustml==0.0.3
+pytorch-lightning==1.5.9
