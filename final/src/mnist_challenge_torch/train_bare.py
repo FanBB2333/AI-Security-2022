@@ -23,7 +23,7 @@ with open('config.json') as config_file:
     config = json.load(config_file)
 
 
-setup_seed(22)
+setup_seed(25)
 
 train_loader, test_loader = get_MNIST_loader()
 model = Model().to(device)
@@ -31,7 +31,7 @@ model = Model().to(device)
 
 if __name__ == '__main__':
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=9e-5)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     epoch = 10
     for e in range(epoch):
         for ibatch, batch_data in enumerate((train_loader)):
