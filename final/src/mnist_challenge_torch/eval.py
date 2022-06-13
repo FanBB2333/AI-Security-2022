@@ -78,6 +78,7 @@ def evaluate_checkpoint(filename = None):
     # model.eval()
     # with torch.no_grad():
     for ibatch, batch_data in enumerate(tqdm(test_loader)):
+        torch.cuda.empty_cache()
         x_batch, y_batch = batch_data
         x_batch, y_batch = x_batch.to(device), y_batch.to(device)
         x_batch_adv, y_batch_adv = attack.perturb(x_batch, y_batch)
