@@ -18,10 +18,11 @@ import torch
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
 
-from model_bare import Model
-from pgd_attack import LinfPGDAttack
-from pgd_attack import device
+from model_pl import Model_PL
+from pgd_attack_pl import LinfPGDAttack
+from pgd_attack_pl import device
 from utils import get_MNIST_loader
+import pytorch_lightning as pl
 from utils import checkpoint_callback
 
 summary_writer = SummaryWriter('eval_logs')
@@ -35,6 +36,15 @@ eval_on_cpu = config['eval_on_cpu']
 
 model_dir = config['model_dir']
 
+train_loader, test_loader = get_MNIST_loader()
+
+model = Model_PL().to(device)
+attack = LinfPGDAttack(model,
+                       config['epsilon'],
+                       config['k'],
+                       config['a'],
+                       config['random_start'],
+                       config['loss_func'])
 
 
 
@@ -59,21 +69,10 @@ def evaluate_checkpoint(filename = None):
     total_xent_adv = 0.
     total_corr_nat = 0
     total_corr_adv = 0
-
-    train_loader, test_loader = get_MNIST_loader()
-
-    model = Model().to(device)
-    attack = LinfPGDAttack(model,
-                           config['epsilon'],
-                           config['k'],
-                           config['a'],
-                           config['random_start'],
-                           config['loss_func'])
     if filename != None:
         print(f'Loading model from checkpoint {filename}')
-        model.load_state_dict(torch.load(filename))
+        model = Model_PL.load_from_checkpoint(filename)
         model = model.to(device)
-
     num_eval_examples = 0
     # model.eval()
     # with torch.no_grad():
@@ -116,5 +115,48 @@ def evaluate_checkpoint(filename = None):
 
 
 if __name__ == '__main__':
-    evaluate_checkpoint('./checkpoints/model_bare.pt')
+    evaluate_checkpoint('./checkpoints/epoch=19-step=2357.ckpt')
+    trainer = pl.Trainer(max_epochs=20,
+                        accelerator="gpu",
+                        strategy="ddp",
+                        fast_dev_run=False,
+                        gpus=-1,
+                        val_check_interval=0.25,
+                        callbacks=[checkpoint_callback],
+                        )
+    # trainer.validate(model=Model(), ckpt_path='./checkpoints/epoch=19-step=2357.ckpt', dataloaders=[test_loader])
 
+
+
+# Infinite eval loop
+# while True:
+#     cur_checkpoint = tf.train.latest_checkpoint(model_dir)
+#
+#     # Case 1: No checkpoint yet
+#     if cur_checkpoint is None:
+#         if not already_seen_state:
+#             print('No checkpoint yet, waiting ...', end='')
+#             already_seen_state = True
+#         else:
+#             print('.', end='')
+#         sys.stdout.flush()
+#         time.sleep(10)
+#     # Case 2: Previously unseen checkpoint
+#     elif cur_checkpoint != last_checkpoint_filename:
+#         print('\nCheckpoint {}, evaluating ...   ({})'.format(cur_checkpoint,
+#                                                               datetime.now()))
+#         sys.stdout.flush()
+#         last_checkpoint_filename = cur_checkpoint
+#         already_seen_state = False
+#         evaluate_checkpoint(cur_checkpoint)
+#     # Case 3: Previously evaluated checkpoint
+#     else:
+#         if not already_seen_state:
+#             print('Waiting for the next checkpoint ...   ({})   '.format(
+#                 datetime.now()),
+#                 end='')
+#             already_seen_state = True
+#         else:
+#             print('.', end='')
+#         sys.stdout.flush()
+#         time.sleep(10)

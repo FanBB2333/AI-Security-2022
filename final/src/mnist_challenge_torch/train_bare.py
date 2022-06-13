@@ -16,21 +16,21 @@ from tqdm import tqdm
 
 from model_bare import Model
 from utils import get_MNIST_loader
-from pgd_attack import device
+from pgd_attack_pl import device
 from utils import setup_seed
 
 with open('config.json') as config_file:
     config = json.load(config_file)
 
 
+setup_seed(22)
 
 train_loader, test_loader = get_MNIST_loader()
 model = Model().to(device)
 
-setup_seed(22)
 
 if __name__ == '__main__':
-    
+
     optimizer = torch.optim.Adam(model.parameters(), lr=9e-5)
     epoch = 10
     for e in range(epoch):
@@ -42,3 +42,5 @@ if __name__ == '__main__':
             optimizer.step()
             optimizer.zero_grad()
             print('loss:', loss, 'accuracy:', accuracy)
+    print('saving model...')
+    torch.save(model.state_dict(), './checkpoints/model_bare.pt')

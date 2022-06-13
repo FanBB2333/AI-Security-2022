@@ -12,15 +12,15 @@ import torch.autograd
 from torch.autograd import Variable
 
 from utils import get_MNIST_loader
-import torch
-from torch import nn, optim
+
+import pytorch_lightning as pl
 from tqdm import tqdm
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class LinfPGDAttack:
-    def __init__(self, model: nn.Module, epsilon, k, a, random_start, loss_func):
+    def __init__(self, model: pl.LightningModule, epsilon, k, a, random_start, loss_func):
         """Attack parameter initialization. The attack performs k steps of
            size a, while always staying within epsilon from the initial
            point."""
@@ -35,7 +35,15 @@ class LinfPGDAttack:
             # loss = model.xent
         elif loss_func == 'cw':
             pass
-
+            # label_mask = tf.one_hot(model.y_input,
+            #                         10,
+            #                         on_value=1.0,
+            #                         off_value=0.0,
+            #                         dtype=tf.float32)
+            # correct_logit = tf.reduce_sum(label_mask * model.pre_softmax, axis=1)
+            # wrong_logit = tf.reduce_max((1-label_mask) * model.pre_softmax
+            #                             - 1e4*label_mask, axis=1)
+            # loss = -tf.nn.relu(correct_logit - wrong_logit + 50)
         else:
             print('Unknown loss function. Defaulting to cross-entropy')
             # loss = model.xent
@@ -76,12 +84,12 @@ if __name__ == '__main__':
     import json
     import sys
     import math
-    from model_bare import Model
+    from model_pl import Model_PL
 
     with open('config.json') as config_file:
         config = json.load(config_file)
 
-    model = Model()
+    model = Model_PL()
     model = model.to(device)
     # TODO: Load model from checkpoint
     attack = LinfPGDAttack(model,

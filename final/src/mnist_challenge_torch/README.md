@@ -14,13 +14,13 @@ python train_pl.py
 ### 3. Run Attack
 The PGD attacking method is implemented to generate adversarial examples.
 ```bash
-python pgd_attack.py
+python pgd_attack_pl.py
 ```
 
 ## 4. Run Evaluation
 TBD
 ```bash
-python eval.py
+python eval_pl.py
 ```
 
 ## 5. Visualization
