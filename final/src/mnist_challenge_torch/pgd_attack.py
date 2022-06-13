@@ -84,12 +84,12 @@ if __name__ == '__main__':
     import json
     import sys
     import math
-    from model import Model
+    from model_pl import Model_PL
 
     with open('config.json') as config_file:
         config = json.load(config_file)
 
-    model = Model()
+    model = Model_PL()
     model = model.to(device)
     # TODO: Load model from checkpoint
     attack = LinfPGDAttack(model,

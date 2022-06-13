@@ -18,7 +18,7 @@ import torch
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
 
-from model import Model
+from model_pl import Model_PL
 from pgd_attack import LinfPGDAttack
 from pgd_attack import device
 from utils import get_MNIST_loader
@@ -38,7 +38,7 @@ model_dir = config['model_dir']
 
 train_loader, test_loader = get_MNIST_loader()
 
-model = Model().to(device)
+model = Model_PL().to(device)
 attack = LinfPGDAttack(model,
                        config['epsilon'],
                        config['k'],
@@ -71,7 +71,7 @@ def evaluate_checkpoint(filename = None):
     total_corr_adv = 0
     if filename != None:
         print(f'Loading model from checkpoint {filename}')
-        model = Model.load_from_checkpoint(filename)
+        model = Model_PL.load_from_checkpoint(filename)
         model = model.to(device)
     num_eval_examples = 0
     # model.eval()

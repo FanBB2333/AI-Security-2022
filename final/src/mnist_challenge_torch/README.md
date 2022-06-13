@@ -8,7 +8,7 @@ pip install -r requirements.txt
 ### 2. Run Training
 The `MNIST` dataset will be downloaded automatically.
 ```bash
-python train.py
+python train_pl.py
 ```
 
 ### 3. Run Attack

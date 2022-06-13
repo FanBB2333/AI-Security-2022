@@ -19,7 +19,7 @@ import torch.utils.data as data_utils
 from torch.utils.data import DataLoader, Dataset
 
 from utils import get_MNIST_loader, checkpoint_callback
-from model import Model
+from model_pl import Model_PL
 # from pgd_attack import LinfPGDAttack
 
 with open('config.json') as config_file:
@@ -39,7 +39,7 @@ with open('config.json') as config_file:
 
 
 train_loader, test_loader = get_MNIST_loader()
-model = Model()
+model = Model_PL()
 
 
 # # Set up adversary

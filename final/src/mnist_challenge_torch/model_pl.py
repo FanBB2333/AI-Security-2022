@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader, random_split
 import pytorch_lightning as pl
 
 
-class Model(pl.LightningModule):
+class Model_PL(pl.LightningModule):
     def __init__(self):
         super().__init__()
         # first convolutional layer
@@ -81,5 +81,5 @@ class Model(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=3e-4)
+        optimizer = optim.Adam(self.parameters(), lr=5e-5)
         return optimizer
