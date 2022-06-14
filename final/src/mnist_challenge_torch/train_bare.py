@@ -34,13 +34,18 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     epoch = 10
     for e in range(epoch):
-        for ibatch, batch_data in enumerate((train_loader)):
-            x_input, y_input = batch_data
-            x_input, y_input = x_input.to(device), y_input.to(device)
-            loss, num_correct, accuracy = model(x_input, y_input)
-            loss.backward()
-            optimizer.step()
-            optimizer.zero_grad()
-            print('loss:', loss, 'accuracy:', accuracy)
+        total_iter = len(train_loader)
+        with tqdm(total=total_iter, desc=f'epoch {e}') as pbar:
+            for ibatch, batch_data in enumerate(train_loader):
+                x_input, y_input = batch_data
+                x_input, y_input = x_input.to(device), y_input.to(device)
+                loss, num_correct, accuracy = model(x_input, y_input)
+                loss.backward()
+                optimizer.step()
+                optimizer.zero_grad()
+                pbar.set_postfix(loss=loss, accuracy=accuracy)
+                pbar.update(1)
+                # print('loss:', loss, 'accuracy:', accuracy)
+
     print('saving model...')
     torch.save(model.state_dict(), './checkpoints/model_bare.pt')
