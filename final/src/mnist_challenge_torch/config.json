@@ -9,6 +9,8 @@
   "num_summary_steps": 100,
   "num_checkpoint_steps": 300,
   "training_batch_size": 50,
+  "epoch": 10,
+  "adv_train": true,
 
   "_comment": "===== EVAL CONFIGURATION =====",
   "num_eval_examples": 10000,
