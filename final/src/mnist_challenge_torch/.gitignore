@@ -5,3 +5,5 @@ lightning_logs/
 eval_logs/
 
 checkpoints/
+
+FashionMNIST/
