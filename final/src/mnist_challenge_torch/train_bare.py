@@ -48,6 +48,7 @@ if __name__ == '__main__':
                 loss_nat, num_correct_nat, accuracy_nat = model(x_input, y_input)
                 if config['adv_train']:
                     x_batch_adv, y_batch_adv = attack.perturb(x_input, y_input)
+                    x_batch_adv, y_batch_adv = x_batch_adv.to(device), y_batch_adv.to(device)
                     loss_adv, num_correct_adv, accuracy_adv = model(x_batch_adv, y_batch_adv)
                     loss_adv.backward()
 
