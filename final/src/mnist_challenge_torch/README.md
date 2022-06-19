@@ -8,19 +8,22 @@ pip install -r requirements.txt
 ### 2. Run Training
 The `MNIST` dataset will be downloaded automatically.
 ```bash
-python train_pl.py
+python train_pl.py # run with pytorch-lightning
+python train_bare.py # run without pytorch-lightning
 ```
 
 ### 3. Run Attack
 The PGD attacking method is implemented to generate adversarial examples.
 ```bash
-python pgd_attack_pl.py
+python pgd_attack_pl.py # run with pytorch-lightning
+python pgd_attack.py # run without pytorch-lightning
 ```
 
 ## 4. Run Evaluation
-TBD
+Evaluation result is printed in the console with the natural accuracy and the adversarial accuracy.
 ```bash
-python eval_pl.py
+python eval_pl.py # run with pytorch-lightning
+python eval.py # run without pytorch-lightning
 ```
 
 ## 5. Visualization

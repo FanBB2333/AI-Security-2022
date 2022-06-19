@@ -114,10 +114,11 @@ Project Gradient Descent 是一种迭代攻击，相比于普通的FGM 仅做一
 我们进行了`10`个epoch的训练，由于模型规模较小，可以通过loss和acc的变化确定模型已经收敛，在训练过程中，每经过25%的epoch便会使用`MNIST`提供的测试集进行一次test，并将test得到的结果绘制成图。
 训练过程中loss:
 
-![](pic/nb_train_loss_v1.png)
+<img src="pic/nb_train_loss_v1.png" style="zoom: 33%;" />
 
 在训练的同时，会进行test，过程中得到的loss和acc，由于模型较为简单，acc并没有得到很高的结果:
-![](pic/nb_valid_v1.png)
+
+<img src="pic/nb_valid_v1.png" style="zoom:50%;" />
 
 训练log记录:
 

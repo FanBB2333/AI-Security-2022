@@ -24,7 +24,7 @@ from pgd_attack import device
 from utils import get_MNIST_loader
 from utils import checkpoint_callback
 
-summary_writer = SummaryWriter('eval_logs')
+# summary_writer = SummaryWriter('eval_logs')
 
 # Global constants
 with open('config.json') as config_file:
@@ -100,14 +100,6 @@ def evaluate_checkpoint(filename = None):
     acc_nat = total_corr_nat / num_eval_examples
     acc_adv = total_corr_adv / num_eval_examples
 
-    # summary = tf.Summary(value=[
-    #     tf.Summary.Value(tag='xent adv eval', simple_value=avg_xent_adv),
-    #     tf.Summary.Value(tag='xent adv', simple_value=avg_xent_adv),
-    #     tf.Summary.Value(tag='xent nat', simple_value=avg_xent_nat),
-    #     tf.Summary.Value(tag='accuracy adv eval', simple_value=acc_adv),
-    #     tf.Summary.Value(tag='accuracy adv', simple_value=acc_adv),
-    #     tf.Summary.Value(tag='accuracy nat', simple_value=acc_nat)])
-    # summary_writer.add_summary(summary, global_step.eval(sess))
 
     print('natural: {:.2f}%'.format(100 * acc_nat))
     print('adversarial: {:.2f}%'.format(100 * acc_adv))

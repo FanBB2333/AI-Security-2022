@@ -25,7 +25,7 @@ from utils import get_MNIST_loader
 import pytorch_lightning as pl
 from utils import checkpoint_callback
 
-summary_writer = SummaryWriter('eval_logs')
+# summary_writer = SummaryWriter('eval_logs')
 
 # Global constants
 with open('config.json') as config_file:
@@ -98,14 +98,6 @@ def evaluate_checkpoint(filename = None):
     acc_nat = total_corr_nat / num_eval_examples
     acc_adv = total_corr_adv / num_eval_examples
 
-    # summary = tf.Summary(value=[
-    #     tf.Summary.Value(tag='xent adv eval', simple_value=avg_xent_adv),
-    #     tf.Summary.Value(tag='xent adv', simple_value=avg_xent_adv),
-    #     tf.Summary.Value(tag='xent nat', simple_value=avg_xent_nat),
-    #     tf.Summary.Value(tag='accuracy adv eval', simple_value=acc_adv),
-    #     tf.Summary.Value(tag='accuracy adv', simple_value=acc_adv),
-    #     tf.Summary.Value(tag='accuracy nat', simple_value=acc_nat)])
-    # summary_writer.add_summary(summary, global_step.eval(sess))
 
     print('natural: {:.2f}%'.format(100 * acc_nat))
     print('adversarial: {:.2f}%'.format(100 * acc_adv))
@@ -128,35 +120,3 @@ if __name__ == '__main__':
 
 
 
-# Infinite eval loop
-# while True:
-#     cur_checkpoint = tf.train.latest_checkpoint(model_dir)
-#
-#     # Case 1: No checkpoint yet
-#     if cur_checkpoint is None:
-#         if not already_seen_state:
-#             print('No checkpoint yet, waiting ...', end='')
-#             already_seen_state = True
-#         else:
-#             print('.', end='')
-#         sys.stdout.flush()
-#         time.sleep(10)
-#     # Case 2: Previously unseen checkpoint
-#     elif cur_checkpoint != last_checkpoint_filename:
-#         print('\nCheckpoint {}, evaluating ...   ({})'.format(cur_checkpoint,
-#                                                               datetime.now()))
-#         sys.stdout.flush()
-#         last_checkpoint_filename = cur_checkpoint
-#         already_seen_state = False
-#         evaluate_checkpoint(cur_checkpoint)
-#     # Case 3: Previously evaluated checkpoint
-#     else:
-#         if not already_seen_state:
-#             print('Waiting for the next checkpoint ...   ({})   '.format(
-#                 datetime.now()),
-#                 end='')
-#             already_seen_state = True
-#         else:
-#             print('.', end='')
-#         sys.stdout.flush()
-#         time.sleep(10)
