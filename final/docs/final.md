@@ -246,21 +246,29 @@ acc_adv = total_corr_adv / num_eval_examples
 
 ## 实验结果分析
 
-acc_adv - epsilon图
+除了基本的攻击实现以外，我们研究了对抗样本的生成参数和攻击效果之间的关系，下面是三个对抗过程中利用到的参数。
 
-epsilon大于1后，会出现攻击效果变差的现象。
+- `epsilon`: 每个像素允许的最大扰动。
+- `k`: 对抗中PGD 迭代次数。
+- `a`: PGD 对抗 step 的大小。
+
+
+
+### acc_adv - epsilon关系
+
+由于epsilon代表了每个像素允许的最大扰动，不难发现当epsilon增大时，对抗样本偏离原样本较大，准确率降低。
 
 <img src="pic/table1.png" alt="image-20220619161508565" style="zoom:50%;" />
 
-acc_adv - k图
+### acc_adv - k关系
 
-可以看到k的大小对于acc_adv的影响并不大。
+可以看到对抗样本准确率随着迭代次数的增大先略微增大再略微减小，推测减小是由于迭代次数过大，对抗样本偏移已到最大值。
 
 <img src="pic/table2.png" alt="image-20220619161626086" style="zoom:33%;" />
 
-acc_adv - a图
+### acc_adv - a关系
 
-随着a增大，acc_adv减小。
+随着a增大，其它条件不变的情况下对抗样本相对原数据的偏移量增大，只不过此时还未到达epsilon的限制最大值，因此acc_adv呈减小趋势。
 
 <img src="pic/table3.png" alt="image-20220619161812131" style="zoom: 25%;" />
 
