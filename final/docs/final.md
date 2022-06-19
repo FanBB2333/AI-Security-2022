@@ -3,7 +3,7 @@
 
 **范钊瑀 3190105838**  
 **向柯蓉 319010**
-## 简介
+## 实验设计
 本次实验利用`PyTorch`复现了`Towards Deep Learning Models Resistant to Adversarial Attacks`文章中提到的白盒攻击方法，在`MNIST`数据集上进行了测试，证明了利用`PGD`生成对抗样本的可行性，并探究了`PGD`攻击时的参数与攻击效果的关系。
 
 论文中提到的的攻击代码: https://github.com/MadryLab/mnist_challenge (使用`TensorFlow`实现)
@@ -59,7 +59,7 @@ S：允许的扰动范围
             x3 = torch.clamp(x2, 0, 1)  # ensure valid pixel range
 ```
 
-## 代码细节
+## 关键实验代码分析
 
 ### 文件结构
 
@@ -230,7 +230,7 @@ acc_nat = total_corr_nat / num_eval_examples
 acc_adv = total_corr_adv / num_eval_examples
 ```
 
-## 攻击效果
+## 实验结果分析
 
 ## 
 作acc_adv ~ epsilon图
@@ -240,7 +240,7 @@ acc_adv = total_corr_adv / num_eval_examples
 作acc_adv ~ a图
 
 
-## 思考与总结
+## 实验总结与思考
 
 ### 1.对抗样本生成
 在对抗样本生成的过程中，改变控制像素最大偏移比例、攻击轮数等参数会对最终的攻击效果有较大影响，在真正的科研工作中，如果能够找到在合理范围之内的扰动并能使得模型性能显著下降的攻击参数，往往是更重要的事情。
@@ -268,3 +268,9 @@ def setup_seed(seed):
 
 
 <img src="pic/learn2.png" style="zoom: 50%;" />
+
+### 4.GPU训练与框架选择
+在训练的过程中，由于模型参数量较大，使用CPU进行训练会十分消耗资源，并且不能达到理想的训练速度，为了提高训练速度，我们选择将模型和数据发送到GPU上进行训练，此外，为了提高攻击时的数据计算速度，我们采用`PyTorch`的运算函数重构了原本论文中由`numpy`完成的攻击过程，使得计算能够在GPU上进行。
+这样也一定程度上提高了数据计算的速度。
+
+此外，对于多卡集群，我们利用`pytorch-lightning`实现了`Distributed Data Parallel`，提高了多卡并行的效率。
