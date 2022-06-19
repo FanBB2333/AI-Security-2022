@@ -241,13 +241,17 @@ acc_adv = total_corr_adv / num_eval_examples
 
 
 ## 思考与总结
-### 1.PyTorch与TensorFlow
+
+### 1.对抗样本生成
+在对抗样本生成的过程中，改变控制像素最大偏移比例、攻击轮数等参数会对最终的攻击效果有较大影响，在真正的科研工作中，如果能够找到在合理范围之内的扰动并能使得模型性能显著下降的攻击参数，往往是更重要的事情。
+
+### 2.PyTorch与TensorFlow
 复现的过程中，我们参考了原论文中提出的`TensorFlow`代码实现，同样的函数在不同的框架中有不同的用法与不同的参数，例如在卷积过程中，两个框架对`Tensor`维度的定义便不同，再例如，在求梯度过程中两个框架利用到的函数也不同。
 
 此外，在不同版本的PyTorch之间，也有函数实现的差异，例如`torch.clamp`在`1.8`版本和之前传入的上下界参数只能为标量，如果传入`Tensor`则会报错，所以在我们的代码中使用了`torch.where`进行代替。
 不过在`1.10`和之后的`PyTorch`中，`torch.clamp`支持了传入`Tensor`作为上下界的参数，方便了我们的编码。
 
-### 2.初始化随机种子
+### 3.初始化随机种子
 由于我们的模型较为简单，每次参数随机初始化的过程中会对最终收敛时的accuracy和loss有较大的影响，为了保证训练的可复现性，我们在`utils.py`中定义了`setup_seed`函数，用于固定各种随机种子。
 ```python
 def setup_seed(seed):
@@ -257,3 +261,10 @@ def setup_seed(seed):
      random.seed(seed)
      torch.backends.cudnn.deterministic = True
 ```
+这里附上如果不固定种子的两次训练收敛结果，可以看到两次训练的收敛位置有较大差异，accuracy和loss也有较大差距。
+
+<img src="pic/learn1.png" style="zoom:25%;" />
+
+
+
+<img src="pic/learn2.png" style="zoom: 50%;" />
