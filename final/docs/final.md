@@ -2,7 +2,8 @@
 小组成员：
 
 **范钊瑀 3190105838**  
-**向柯蓉 319010**
+**向柯蓉 3190106070**
+
 ## 实验设计
 本次实验利用`PyTorch`复现了`Towards Deep Learning Models Resistant to Adversarial Attacks`文章中提到的白盒攻击方法，在`MNIST`数据集上进行了测试，证明了利用`PGD`生成对抗样本的可行性，并探究了`PGD`攻击时的参数与攻击效果的关系。
 
@@ -12,7 +13,7 @@
 
 目标描述
 
-<img src="./pic/target_desc.png" style="zoom:25%;" />
+<img src="pic/target_desc.png" style="zoom:25%;" />
 
 *θ*：模型参数
 
@@ -24,15 +25,25 @@ S：允许的扰动范围
 
 寻找模型参数θ最小化期待的最大损失
 
-
-
 攻击——内部最大化损失问题 
 
 防御——外部最小化期待问题
 
 我们的任务为生成对抗攻击样本，采用**projected gradient descent (PGD)**的多步方法
 
-<img src="./pic/pgd.png" style="zoom:25%;" />
+<img src="./pic/pgd.png" alt="pgd" style="zoom:25%;" />
+
+Project Gradient Descent 是一种迭代攻击，相比于普通的FGM 仅做一次迭代，PGD是做多次迭代，每次走一小步，每次迭代都会将扰动投射到规定范围内。
+
+![[公式]](pic/equation-20220619144717146)
+
+![[公式]](pic/equation-20220619144800234)
+
+其中 <img src="pic/image-20220619144909591.png" alt="image-20220619144909591" style="zoom: 33%;" />,<img src="pic/image-20220619144931083.png" alt="image-20220619144931083" style="zoom:33%;" /> 为扰动的约束空间，𝛼为小步的步长，这里<img src="pic/image-20220619145107350.png" alt="image-20220619145107350" style="zoom:33%;" />含义时在𝜖 -ball上执行投射。
+
+在论文中，作者将通过一阶梯度得到的样本称为“一阶对抗”，而在所有的一阶对抗样本中，效果上认为PGD为最优的方法。
+
+<img src="pic/image-20220619145107350.png" alt="image-20220619145107350" style="zoom:33%;" />为在𝜖 -ball球上的投影，即如果我们的扰动幅度过大，我们将origin部分其拉回边界球project处。多次操作后，即是扰动在球内多次叠加。
 
 代码实现：
 `LinfPGDAttack`类中的`self.rand`变量决定了对抗样本的初识值是有已有样本还是由随机数生成，在指定迭代次数`k`之后，由于我们实施的是白盒攻击，对于每一次迭代，先求得正向传播的梯度，将梯度加到原样本上，并对得到结果的上下限进行限定，以保证结果的正确性。
@@ -95,6 +106,8 @@ S：允许的扰动范围
 > config.json 配置文件，包含epsilon
 > 
 > utils.py 初始化数据集 & 设置checkpoint
+
+
 
 ### 训练过程
 
@@ -232,12 +245,23 @@ acc_adv = total_corr_adv / num_eval_examples
 
 ## 实验结果分析
 
-## 
-作acc_adv ~ epsilon图
+acc_adv - epsilon图
 
-作acc_adv ~ k图
+epsilon大于1后，会出现攻击效果变差的现象。
 
-作acc_adv ~ a图
+<img src="pic/image-20220619161508565.png" alt="image-20220619161508565" style="zoom:50%;" />
+
+acc_adv - k图
+
+可以看到k的大小对于acc_adv的影响并不大。
+
+<img src="pic/image-20220619161626086.png" alt="image-20220619161626086" style="zoom:33%;" />
+
+acc_adv - a图
+
+随着a增大，acc_adv减小。
+
+<img src="pic/image-20220619161812131.png" alt="image-20220619161812131" style="zoom: 25%;" />
 
 
 ## 实验总结与思考
@@ -274,3 +298,4 @@ def setup_seed(seed):
 这样也一定程度上提高了数据计算的速度。
 
 此外，对于多卡集群，我们利用`pytorch-lightning`实现了`Distributed Data Parallel`，提高了多卡并行的效率。
+
