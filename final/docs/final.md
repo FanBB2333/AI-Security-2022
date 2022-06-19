@@ -35,15 +35,15 @@ S：允许的扰动范围
 
 Project Gradient Descent 是一种迭代攻击，相比于普通的FGM 仅做一次迭代，PGD是做多次迭代，每次走一小步，每次迭代都会将扰动投射到规定范围内。
 
-![[公式]](pic/equation-20220619144717146)
+<img src="pic/equation.png" alt="image-20220619162709582" style="zoom:33%;" />
 
-![[公式]](pic/equation-20220619144800234)
 
-其中 <img src="pic/image-20220619144909591.png" alt="image-20220619144909591" style="zoom: 33%;" />,<img src="pic/image-20220619144931083.png" alt="image-20220619144931083" style="zoom:33%;" /> 为扰动的约束空间，𝛼为小步的步长，这里<img src="pic/image-20220619145107350.png" alt="image-20220619145107350" style="zoom:33%;" />含义时在𝜖 -ball上执行投射。
+
+其中 <img src="pic/eq1.png" style="zoom: 33%;" />,<img src="pic/eq2.png" style="zoom:33%;" /> 为扰动的约束空间，𝛼为小步的步长，这里<img src="pic/eq3.png" alt="eq3" style="zoom:33%;" />含义时在𝜖 -ball上执行投射。
 
 在论文中，作者将通过一阶梯度得到的样本称为“一阶对抗”，而在所有的一阶对抗样本中，效果上认为PGD为最优的方法。
 
-<img src="pic/image-20220619145107350.png" alt="image-20220619145107350" style="zoom:33%;" />为在𝜖 -ball球上的投影，即如果我们的扰动幅度过大，我们将origin部分其拉回边界球project处。多次操作后，即是扰动在球内多次叠加。
+<img src="pic/eq3.png" alt="image-20220619145107350" style="zoom:33%;" />为在𝜖 -ball球上的投影，即如果我们的扰动幅度过大，我们将origin部分其拉回边界球project处。多次操作后，即是扰动在球内多次叠加。
 
 代码实现：
 `LinfPGDAttack`类中的`self.rand`变量决定了对抗样本的初识值是有已有样本还是由随机数生成，在指定迭代次数`k`之后，由于我们实施的是白盒攻击，对于每一次迭代，先求得正向传播的梯度，将梯度加到原样本上，并对得到结果的上下限进行限定，以保证结果的正确性。
@@ -249,19 +249,19 @@ acc_adv - epsilon图
 
 epsilon大于1后，会出现攻击效果变差的现象。
 
-<img src="pic/image-20220619161508565.png" alt="image-20220619161508565" style="zoom:50%;" />
+<img src="pic/table1.png" alt="image-20220619161508565" style="zoom:50%;" />
 
 acc_adv - k图
 
 可以看到k的大小对于acc_adv的影响并不大。
 
-<img src="pic/image-20220619161626086.png" alt="image-20220619161626086" style="zoom:33%;" />
+<img src="pic/table2.png" alt="image-20220619161626086" style="zoom:33%;" />
 
 acc_adv - a图
 
 随着a增大，acc_adv减小。
 
-<img src="pic/image-20220619161812131.png" alt="image-20220619161812131" style="zoom: 25%;" />
+<img src="pic/table3.png" alt="image-20220619161812131" style="zoom: 25%;" />
 
 
 ## 实验总结与思考
